@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+	http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+	<changeSet id="01-create_sequence_table_account" author="Matheus">
+    	<createSequence sequenceName="seq_tb_account" startValue="0" incrementBy="1"/>  
+    </changeSet>
+    
+    <changeSet id="02-create_table" author="Matheus">
+        <createTable tableName="tb_account">
+            <column name="id" type="int" valueSequenceNext="seq_tb_card">
+                <constraints primaryKey="true" primaryKeyName="pk_account"/>
+            </column>
+            <column name="name_owner" type="varchar(50)">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="agency_code" type="varchar(4)">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="account_code" type="varchar(8)">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="digit_verification" type="varchar(1)">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="register_id" type="varchar(11)">
+				<constraints nullable="false" unique="true"/>            
+            </column>
+        </createTable>
+    </changeSet>
+    
+   	<changeSet id="03-create_sequence_table_card" author="Matheus">
+    	<createSequence sequenceName="seq_tb_card" startValue="0" incrementBy="1"/>  
+    </changeSet>
+    
+    <changeSet id="04-create_table_card" author="Matheus">
+    	<createTable tableName="tb_card">
+    		<column name="id" type="int" valueSequenceNext="seq_tb_card">
+				<constraints primaryKey="true" primaryKeyName="pk_card"/>    		
+    		</column>
+    		<column name="name" type="varchar(128)">
+    			<constraints nullable="false"/>
+    		</column>
+    		<column name="flag" type="varchar(45)">
+    			<constraints nullable="false"/>
+    		</column>
+    		<column name="number" type="varchar(20)">
+    			<constraints nullable="false"/>
+    		</column>
+    		<column name="digit_code" type="varchar(5)">
+    			<constraints nullable="false"/>
+    		</column>
+    		<column name="limit_balance" type="double(14,2)">
+    			<constraints nullable="false"/>
+    		</column>
+    		<column name="account_id" type="int"/>
+    		<column name="type_card_id" type="int"/>
+    	</createTable>
+    </changeSet>
+    
+    <changeSet id="05-create_sequence_table_type_card" author="Matheus">
+    	<createSequence sequenceName="seq_tb_type_card" startValue="0" incrementBy="1"/>  
+    </changeSet>
+    
+    <changeSet id="06-create_table_type_card" author="Matheus">
+    	<createTable tableName="tb_type_card">
+    		<column name="id" type="int" valueSequenceNext="seq_tb_type_card">
+    			<constraints primaryKey="true" primaryKeyName="pk_type_card"/>
+    		</column>
+    		<column name="name" type="varchar(45)">
+    			<constraints nullable="false" unique="true"/>
+    		</column>
+    	</createTable>
+    </changeSet>
+    
+    <changeSet id="07-relation_tb_account_tb_card" author="Matheus">
+    	<addForeignKeyConstraint constraintName="fk_tb_card_tb_account" 
+    		referencedTableName="tb_account" referencedColumnNames="id"
+    		baseColumnNames="account_id" baseTableName="tb_card"/>
+    </changeSet>
+    
+    <changeSet id="08-relation_tb_type_card_tb_card" author="Matheus">
+    	<addForeignKeyConstraint constraintName="fk_tb_card_tb_type_card" 
+    		referencedTableName="tb_type_card" referencedColumnNames="id"
+    		baseColumnNames="type_card_id" baseTableName="tb_card"/>
+    </changeSet>
+</databaseChangeLog>
