@@ -12,7 +12,7 @@
     
     <changeSet id="02-create_table" author="Matheus">
         <createTable tableName="tb_account">
-            <column name="id" type="int" valueSequenceNext="seq_tb_card">
+            <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="pk_account"/>
             </column>
             <column name="name_owner" type="varchar(50)">
@@ -33,13 +33,9 @@
         </createTable>
     </changeSet>
     
-   	<changeSet id="03-create_sequence_table_card" author="Matheus">
-    	<createSequence sequenceName="seq_tb_card" startValue="0" incrementBy="1"/>  
-    </changeSet>
-    
     <changeSet id="04-create_table_card" author="Matheus">
     	<createTable tableName="tb_card">
-    		<column name="id" type="int" valueSequenceNext="seq_tb_card">
+    		<column name="id" type="int" autoIncrement="true">
 				<constraints primaryKey="true" primaryKeyName="pk_card"/>    		
     		</column>
     		<column name="name" type="varchar(128)">
@@ -58,34 +54,45 @@
     			<constraints nullable="false"/>
     		</column>
     		<column name="account_id" type="int"/>
-    		<column name="type_card_id" type="int"/>
+    		<column name="card_type_id" type="int"/>
     	</createTable>
     </changeSet>
     
-    <changeSet id="05-create_sequence_table_type_card" author="Matheus">
-    	<createSequence sequenceName="seq_tb_type_card" startValue="0" incrementBy="1"/>  
-    </changeSet>
-    
-    <changeSet id="06-create_table_type_card" author="Matheus">
+    <changeSet id="06-create_table_type_card" author="Matheus" dbms="mysql">
     	<createTable tableName="tb_type_card">
-    		<column name="id" type="int" valueSequenceNext="seq_tb_type_card">
+    		<column name="id" type="int" autoIncrement="true">
     			<constraints primaryKey="true" primaryKeyName="pk_type_card"/>
     		</column>
-    		<column name="name" type="varchar(45)">
+    		<column name="type" type="varchar(45)">
     			<constraints nullable="false" unique="true"/>
     		</column>
     	</createTable>
     </changeSet>
     
-    <changeSet id="07-relation_tb_account_tb_card" author="Matheus">
-    	<addForeignKeyConstraint constraintName="fk_tb_card_tb_account" 
+    <changeSet id="07-relation_tb_account_tb_card" author="Matheus" dbms="mysql">
+    	<addForeignKeyConstraint constraintName="fk_tb_card_tb_account"
     		referencedTableName="tb_account" referencedColumnNames="id"
-    		baseColumnNames="account_id" baseTableName="tb_card"/>
+    		baseTableName="tb_card" baseColumnNames="account_id" />
     </changeSet>
     
-    <changeSet id="08-relation_tb_type_card_tb_card" author="Matheus">
-    	<addForeignKeyConstraint constraintName="fk_tb_card_tb_type_card" 
+    <changeSet id="08-relation_tb_type_card_tb_card" author="Matheus" dbms="mysql">
+    	<addForeignKeyConstraint constraintName="fk_tb_card_tb_type_card"
     		referencedTableName="tb_type_card" referencedColumnNames="id"
-    		baseColumnNames="type_card_id" baseTableName="tb_card"/>
+    		baseTableName="tb_card" baseColumnNames="card_type_id"/>
+    </changeSet>
+    
+    <changeSet id="09-insert_type_cards" author="Matheus" >
+    	<insert tableName="tb_type_card" dbms="mysql">
+    		<column name="type" value="DEBIT_CARD"/>
+    	</insert>
+    	<insert tableName="tb_type_card" dbms="mysql">
+    		<column name="type" value="CREDIT_CARD"/>
+    	</insert>
+    	<insert tableName="tb_type_card" dbms="mysql">
+    		<column name="type" value="GIFT_CARD"/>
+    	</insert>
+   		<insert tableName="tb_type_card" dbms="mysql">
+    		<column name="type" value="MEAL_CARD"/>
+    	</insert>
     </changeSet>
 </databaseChangeLog>
