@@ -1,5 +1,7 @@
 package com.neptum.BankAccountApi.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,15 +42,32 @@ public class AccountService
 			accountRequest.getRegisterId(),
 			accountRequest.getCardsRequest());
 				
-		for (Card card : account.getCards()) {			
-			Integer id = findIdForType(card.getCardType().getType().getName(), persistedCardsTypes);
+		for (final Card card : account.getCards()) {			
+			final String name = card.getCardType().getType().getName();
+			final Integer id = findIdForType(name, persistedCardsTypes);
 			card.getCardType().setId(id);
 		}
 			
 		final Account savedAccount = accountRepository.save(account);
 		return savedAccount;
 	}
+	
+	public List<Account> getAccounts() 
+	{
+		return accountRepository.findAll();
+	}
 
+	public Account getAccountById(
+		final Integer id) 
+	{
+		final Optional<Account> oAccount = accountRepository.findById(id);
+		if (!oAccount.isPresent()) {
+			throw new RuntimeException("Account not found!");
+		}
+		final Account account = oAccount.get();
+		return account;
+	}
+	
 	private Integer findIdForType(
 		final String name, 
 		final Set<CardType> persistedCardsTypes) 
@@ -64,7 +83,7 @@ public class AccountService
 	{
 		 return	cardsNames
 			.stream()
-			.map( cardName -> Type.valueOf(cardName))
+			.map(cardName -> Type.valueOf(cardName))
 			.collect(Collectors.toSet());
 	}
 
@@ -73,7 +92,7 @@ public class AccountService
 	{
 		return accountRequest.getCardsRequest()
 			.stream()
-			.map( cardRequest -> cardRequest.getCardTypeRequest().getCardType())
+			.map(cardRequest -> cardRequest.getCardTypeRequest().getCardType())
 			.collect(Collectors.toSet());
 	}
 }
