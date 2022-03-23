@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.MoreCollectors;
+
 import com.neptum.BankAccountApi.DTO.request.AccountRequest;
 import com.neptum.BankAccountApi.Model.Account;
 import com.neptum.BankAccountApi.Model.Card;
@@ -16,7 +17,7 @@ import com.neptum.BankAccountApi.Model.CardType;
 import com.neptum.BankAccountApi.Model.Type;
 import com.neptum.BankAccountApi.Repository.AccountRepository;
 import com.neptum.BankAccountApi.Repository.CardTypeRepository;
-
+import com.neptum.BankAccountApi.exception.AccountNotFoundException;
 
 @Service
 public class AccountService
@@ -62,7 +63,7 @@ public class AccountService
 	{
 		final Optional<Account> oAccount = accountRepository.findById(id);
 		if (!oAccount.isPresent()) {
-			throw new RuntimeException("Account not found!");
+			throw new AccountNotFoundException("Account not found!");
 		}
 		final Account account = oAccount.get();
 		return account;
