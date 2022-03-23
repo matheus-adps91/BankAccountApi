@@ -10,7 +10,7 @@ public enum Type
 	private final String name;
 
 	Type(String type) {
-		this.name = type;
+		this.name = type.toUpperCase();
 	}
 
 	public String getName() { return name; }

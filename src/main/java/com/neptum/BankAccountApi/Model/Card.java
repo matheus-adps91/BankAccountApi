@@ -1,6 +1,5 @@
 package com.neptum.BankAccountApi.Model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -36,7 +35,7 @@ public class Card
 		final CardRequest cardRequest) 
 	{
 		this.name = cardRequest.getName();
-		this.flag = Flag.valueOf(cardRequest.getFlag());
+		this.flag = Flag.valueOf(cardRequest.getFlag().toUpperCase());
 		this.cardType = new CardType(cardRequest.getCardTypeRequest().getCardType());
 		this.number = cardRequest.getNumber();
 		this.digitCode = cardRequest.getDigitCode();

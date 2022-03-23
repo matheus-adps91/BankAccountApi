@@ -17,6 +17,7 @@ import com.neptum.BankAccountApi.Model.CardType;
 import com.neptum.BankAccountApi.Model.Type;
 import com.neptum.BankAccountApi.Repository.AccountRepository;
 import com.neptum.BankAccountApi.Repository.CardTypeRepository;
+import com.neptum.BankAccountApi.constants.Constants;
 import com.neptum.BankAccountApi.exception.AccountNotFoundException;
 
 @Service
@@ -63,7 +64,7 @@ public class AccountService
 	{
 		final Optional<Account> oAccount = accountRepository.findById(id);
 		if (!oAccount.isPresent()) {
-			throw new AccountNotFoundException("Account not found!");
+			throw new AccountNotFoundException(Constants.ACCOUNT_NOT_FOUND_EXCEPTION);
 		}
 		final Account account = oAccount.get();
 		return account;
@@ -89,17 +90,15 @@ public class AccountService
 	private Set<Type> getCardsTypes(
 		final Set<String> cardsNames) 
 	{
-		 return	cardsNames
-			.stream()
-			.map(cardName -> Type.valueOf(cardName))
+		 return	cardsNames.stream()
+			.map(cardName -> Type.valueOf(cardName.toUpperCase()))
 			.collect(Collectors.toSet());
 	}
 
 	private Set<String> getCardsNames(
 		final AccountRequest accountRequest) 
 	{
-		return accountRequest.getCardsRequest()
-			.stream()
+		return accountRequest.getCardsRequest().stream()
 			.map(cardRequest -> cardRequest.getCardTypeRequest().getCardType())
 			.collect(Collectors.toSet());
 	}
