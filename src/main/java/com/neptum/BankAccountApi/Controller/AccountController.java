@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +36,7 @@ public class AccountController
 	public ResponseEntity<List<Account>> getAccounts()
 	{
 		final List<Account> accounts = accountService.getAccounts();
-		return new ResponseEntity<List<Account>>(accounts, HttpStatus.OK);
+		return new ResponseEntity<>(accounts, HttpStatus.OK);
 	}
 	
 	@GetMapping("/accounts/{id}")
@@ -43,6 +44,14 @@ public class AccountController
 		final @PathVariable("id") Integer id)
 	{
 		final Account account = accountService.getAccountById(id);
-		return new ResponseEntity<Account>(account, HttpStatus.OK);
+		return new ResponseEntity<>(account, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/accounts/{id}")
+	public ResponseEntity<?> deleteAccountById(
+		final @PathVariable("id") Integer id)
+	{
+		accountService.deleteAccountById(id);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

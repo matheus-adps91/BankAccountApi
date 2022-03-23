@@ -68,6 +68,13 @@ public class AccountService
 		return account;
 	}
 	
+	public void deleteAccountById(
+		final Integer id) 
+	{
+		final Account account = getAccountById(id);
+		accountRepository.delete(account);
+	}
+	
 	private Integer findIdForType(
 		final String name, 
 		final Set<CardType> persistedCardsTypes) 

@@ -29,7 +29,7 @@ public class Account
 	private String verificationDigital;
 	@Column( name = "register_id")
 	private String personalRegister;
-	@OneToMany(targetEntity = Card.class, cascade = CascadeType.PERSIST)
+	@OneToMany(targetEntity = Card.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "account_id")
 	private List<Card> cards;
 	
