@@ -1,5 +1,6 @@
 package com.neptum.BankAccountApi.Model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,7 +23,7 @@ public class Card
 	private String name;
 	@Enumerated(EnumType.STRING)
 	private Flag flag;
-	@ManyToOne(targetEntity = CardType.class)
+	@ManyToOne(targetEntity = CardType.class, cascade = CascadeType.MERGE)
 	@JoinColumn
 	private CardType cardType;
 	private String number;

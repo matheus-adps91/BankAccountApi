@@ -16,6 +16,7 @@ import com.neptum.BankAccountApi.Model.Card;
 import com.neptum.BankAccountApi.Model.CardType;
 import com.neptum.BankAccountApi.Model.Type;
 import com.neptum.BankAccountApi.Repository.AccountRepository;
+import com.neptum.BankAccountApi.Repository.CardRepository;
 import com.neptum.BankAccountApi.Repository.CardTypeRepository;
 import com.neptum.BankAccountApi.constants.Constants;
 import com.neptum.BankAccountApi.exception.AccountNotFoundException;
@@ -25,39 +26,24 @@ public class AccountService
 {
 	@Autowired
 	private AccountRepository accountRepository;
-	
+	@Autowired
+	private CardRepository cardRepository;
 	@Autowired
 	private CardTypeRepository cardTypeRepository;
 	
 	public Account createAccount(
 		final AccountRequest accountRequest) 
 	{
-		final Set<String> cardsNames = getCardsNames(accountRequest);
-		final Set<Type> types = getCardsTypes(cardsNames);
+		final Set<String> cardsNames = getCardsTypesNames(accountRequest);
+		final Set<Type> types = getTypes(cardsNames);
 		final Set<CardType> persistedCardsTypes = cardTypeRepository.findAllByTypeIn(types);
-		
-		final Account account = new Account(
-			accountRequest.getNameOwner(), 
-			accountRequest.getAgencyCode(), 
-			accountRequest.getAccountCode(), 
-			accountRequest.getVerificationDigital(),
-			accountRequest.getRegisterId(),
-			accountRequest.getCardsRequest());
-				
-		for (final Card card : account.getCards()) {			
-			final String name = card.getCardType().getType().getName();
-			final Integer id = findIdForType(name, persistedCardsTypes);
-			card.getCardType().setId(id);
-		}
-			
+		final Account account = Account.getAccountInstance(accountRequest);
+		setIdForEachCardType(persistedCardsTypes, account);
 		final Account savedAccount = accountRepository.save(account);
 		return savedAccount;
 	}
 	
-	public List<Account> getAccounts() 
-	{
-		return accountRepository.findAll();
-	}
+	public List<Account> getAccounts() { return accountRepository.findAll(); }
 
 	public Account getAccountById(
 		final Integer id) 
@@ -77,7 +63,29 @@ public class AccountService
 		accountRepository.delete(account);
 	}
 	
-	private Integer findIdForType(
+	public Account updateAccountById(
+		final Integer id, 
+		final AccountRequest accountRequest) 
+	{
+		final Account account = getAccountById(id);
+		final Set<String> cardsNames = getCardsTypesNames(accountRequest);
+		final Set<Type> types = getTypes(cardsNames);
+		final Set<CardType> persistedCardsTypes = cardTypeRepository.findAllByTypeIn(types);
+		final Account newAccount = Account.getAccountInstance(accountRequest);
+		setIdForEachCardType(persistedCardsTypes, newAccount);
+		newAccount.setId(account.getId());
+		final Account updatedAccount = accountRepository.save(newAccount);
+		deleteOldCardsEntities(account.getCards());
+		return updatedAccount; 
+	}
+
+	private void deleteOldCardsEntities(
+		final List<Card> cards) 
+	{
+		cardRepository.deleteAll(cards);
+	}
+
+	private static Integer findIdForTypeName(
 		final String name, 
 		final Set<CardType> persistedCardsTypes) 
 	{
@@ -87,7 +95,7 @@ public class AccountService
 			.collect(MoreCollectors.onlyElement());
 	}
 
-	private Set<Type> getCardsTypes(
+	private static Set<Type> getTypes(
 		final Set<String> cardsNames) 
 	{
 		 return	cardsNames.stream()
@@ -95,11 +103,22 @@ public class AccountService
 			.collect(Collectors.toSet());
 	}
 
-	private Set<String> getCardsNames(
+	private static Set<String> getCardsTypesNames(
 		final AccountRequest accountRequest) 
 	{
 		return accountRequest.getCardsRequest().stream()
 			.map(cardRequest -> cardRequest.getCardTypeRequest().getCardType())
 			.collect(Collectors.toSet());
+	}
+	
+	private static void setIdForEachCardType(
+		final Set<CardType> persistedCardsTypes, 
+		final Account account) 
+	{
+		for (final Card card : account.getCards()) {			
+			final String name = card.getCardType().getType().getName();
+			final Integer cardTypeId = findIdForTypeName(name, persistedCardsTypes);
+			card.getCardType().setId(cardTypeId);
+		}
 	}
 }

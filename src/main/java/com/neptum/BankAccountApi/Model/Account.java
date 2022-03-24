@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.neptum.BankAccountApi.DTO.request.AccountRequest;
 import com.neptum.BankAccountApi.DTO.request.CardRequest;
 
 @Entity
@@ -29,13 +30,13 @@ public class Account
 	private String verificationDigital;
 	@Column( name = "register_id")
 	private String personalRegister;
-	@OneToMany(targetEntity = Card.class, cascade = CascadeType.ALL)
+	@OneToMany(targetEntity = Card.class, cascade = CascadeType.ALL, orphanRemoval = true )
 	@JoinColumn(name = "account_id")
 	private List<Card> cards;
 	
 	public Account() { }
 
-	public Account(
+	private Account(
 		final String nameOwner, 
 		final String agencyCode, 
 		final String accountCode, 
@@ -51,6 +52,18 @@ public class Account
 		this.cards = cardsRequest.stream().map( cardRequest -> new Card(cardRequest) ).collect(Collectors.toList());
 	}
 
+	public static Account getAccountInstance(
+		final AccountRequest accountRequest)
+	{
+		return new Account(
+			accountRequest.getNameOwner(), 
+			accountRequest.getAgencyCode(), 
+			accountRequest.getAccountCode(), 
+			accountRequest.getVerificationDigital(),
+			accountRequest.getRegisterId(),
+			accountRequest.getCardsRequest());
+	}		
+
 	public Integer getId() { return id; }
 
 	public String getNameOwner() { return nameOwner; }
@@ -64,4 +77,6 @@ public class Account
 	public String getRegisterId() { return personalRegister; }
 
 	public List<Card> getCards() { return cards; }
+	
+	public void setId(Integer id) { this.id = id; }
 }
