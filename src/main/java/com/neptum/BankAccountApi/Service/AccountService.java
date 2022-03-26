@@ -3,12 +3,9 @@ package com.neptum.BankAccountApi.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.google.common.collect.MoreCollectors;
 
 import com.neptum.BankAccountApi.DTO.request.AccountRequest;
 import com.neptum.BankAccountApi.Model.Account;
@@ -34,11 +31,12 @@ public class AccountService
 	public Account createAccount(
 		final AccountRequest accountRequest) 
 	{
-		final Set<String> cardsNames = getCardsTypesNames(accountRequest);
-		final Set<Type> types = getTypes(cardsNames);
+		final TaskCollaborator taskCollaborator = new TaskCollaborator();
+		final Set<String> cardsNames = taskCollaborator.getCardsTypesNames(accountRequest);
+		final Set<Type> types = taskCollaborator.getTypes(cardsNames);
 		final Set<CardType> persistedCardsTypes = cardTypeRepository.findAllByTypeIn(types);
 		final Account account = Account.getAccountInstance(accountRequest);
-		setIdForEachCardType(persistedCardsTypes, account);
+		taskCollaborator.setIdForEachCardType(persistedCardsTypes, account);
 		final Account savedAccount = accountRepository.save(account);
 		return savedAccount;
 	}
@@ -67,12 +65,13 @@ public class AccountService
 		final Integer id, 
 		final AccountRequest accountRequest) 
 	{
+		final TaskCollaborator taskCollaborator = new TaskCollaborator();
 		final Account account = getAccountById(id);
-		final Set<String> cardsNames = getCardsTypesNames(accountRequest);
-		final Set<Type> types = getTypes(cardsNames);
+		final Set<String> cardsNames = taskCollaborator.getCardsTypesNames(accountRequest);
+		final Set<Type> types = taskCollaborator.getTypes(cardsNames);
 		final Set<CardType> persistedCardsTypes = cardTypeRepository.findAllByTypeIn(types);
 		final Account newAccount = Account.getAccountInstance(accountRequest);
-		setIdForEachCardType(persistedCardsTypes, newAccount);
+		taskCollaborator.setIdForEachCardType(persistedCardsTypes, newAccount);
 		newAccount.setId(account.getId());
 		final Account updatedAccount = accountRepository.save(newAccount);
 		deleteOldCardsEntities(account.getCards());
@@ -83,42 +82,5 @@ public class AccountService
 		final List<Card> cards) 
 	{
 		cardRepository.deleteAll(cards);
-	}
-
-	private static Integer findIdForTypeName(
-		final String name, 
-		final Set<CardType> persistedCardsTypes) 
-	{
-		return persistedCardsTypes.stream()
-			.filter(cardType -> cardType.getType().getName().equals(name))
-			.map(cardType -> cardType.getId())
-			.collect(MoreCollectors.onlyElement());
-	}
-
-	private static Set<Type> getTypes(
-		final Set<String> cardsNames) 
-	{
-		 return	cardsNames.stream()
-			.map(cardName -> Type.valueOf(cardName.toUpperCase()))
-			.collect(Collectors.toSet());
-	}
-
-	private static Set<String> getCardsTypesNames(
-		final AccountRequest accountRequest) 
-	{
-		return accountRequest.getCardsRequest().stream()
-			.map(cardRequest -> cardRequest.getCardTypeRequest().getCardType())
-			.collect(Collectors.toSet());
-	}
-	
-	private static void setIdForEachCardType(
-		final Set<CardType> persistedCardsTypes, 
-		final Account account) 
-	{
-		for (final Card card : account.getCards()) {			
-			final String name = card.getCardType().getType().getName();
-			final Integer cardTypeId = findIdForTypeName(name, persistedCardsTypes);
-			card.getCardType().setId(cardTypeId);
-		}
 	}
 }

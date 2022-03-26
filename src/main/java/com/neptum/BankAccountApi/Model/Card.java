@@ -37,7 +37,7 @@ public class Card
 	{
 		this.name = cardRequest.getName();
 		this.flag = Flag.valueOf(cardRequest.getFlag().toUpperCase());
-		this.cardType = new CardType(cardRequest.getCardTypeRequest().getCardType());
+		this.cardType = new CardType( cardRequest.getCardTypeRequest().getTypeName() );
 		this.number = cardRequest.getNumber();
 		this.digitCode = cardRequest.getDigitCode();
 		this.limitBalance = cardRequest.getLimitBalance();

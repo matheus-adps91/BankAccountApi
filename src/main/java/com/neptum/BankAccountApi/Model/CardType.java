@@ -26,6 +26,14 @@ public class CardType
 		this.type = Type.valueOf(type.toUpperCase());
 	}
 
+	public CardType(
+		final Integer id, 
+		final String type) 
+	{
+		this.id = id;
+		this.type = Type.valueOf(type.toUpperCase());;
+	}
+
 	public Integer getId() { return id; }
 
 	public Type getType() { return type; }

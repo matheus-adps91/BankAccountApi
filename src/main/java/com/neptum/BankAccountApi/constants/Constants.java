@@ -25,16 +25,19 @@ public class Constants
 	
 	// Exception
 	public static final String ACCOUNT_NOT_FOUND_EXCEPTION = "Account not found!";
-
+	public static final String CARD_TYPE_ID_NOT_FOUND_EXCEPTION = "Card Type Id not found";
 	// Card Type
 	public static final String DEBIT_CARD = "DEBIT_CARD";
-	public static final String CREBIT_CARD = "CREDIT_CARD";
+	public static final String CREDIT_CARD = "CREDIT_CARD";
 	public static final String MEAL_CARD = "MEAL_CARD";
 	public static final String GIFT_CARD = "GIFT_CARD";
 	
 	// Flag
-	public static final String MASTER_CARD = "MASTER_CARD";
+	public static final String MASTERCARD = "MASTERCARD";
 	public static final String VISA = "VISA";
 	public static final String ELO = "ELO";
+	
+	// Instance not Found
+	public static final int INSTANCE_NOT_FOUND = -1;
 	
 }
