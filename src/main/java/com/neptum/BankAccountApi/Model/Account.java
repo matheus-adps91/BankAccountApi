@@ -1,5 +1,6 @@
 package com.neptum.BankAccountApi.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,7 @@ public class Account
 		this.cards = cardsRequest.stream().map( cardRequest -> new Card(cardRequest) ).collect(Collectors.toList());
 	}
 
-	public static Account getAccountInstance(
+	public static Account generateAccountInstance(
 		final AccountRequest accountRequest)
 	{
 		return new Account(
@@ -62,7 +63,18 @@ public class Account
 			accountRequest.getVerificationDigital(),
 			accountRequest.getRegisterId(),
 			accountRequest.getCardsRequest());
-	}		
+	}
+	
+	public static List<Account> generateAccountsInstance(
+		final List<AccountRequest> accountsRquest) 
+	{
+		final List<Account> accounts = new ArrayList<>();
+		for (final AccountRequest accountRequest : accountsRquest) {
+			final Account currentAccount = generateAccountInstance(accountRequest);
+			accounts.add(currentAccount);
+		}
+		return accounts;
+	}
 
 	public Integer getId() { return id; }
 

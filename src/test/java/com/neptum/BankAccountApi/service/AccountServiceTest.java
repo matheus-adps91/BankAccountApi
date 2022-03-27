@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +35,7 @@ import com.neptum.BankAccountApi.Service.AccountService;
 import com.neptum.BankAccountApi.Service.TaskCollaborator;
 import com.neptum.BankAccountApi.constants.Constants;
 import com.neptum.BankAccountApi.exception.AccountNotFoundException;
+import com.neptum.BankAccountApi.utils.Utilities;
 
 @DisplayName("Test Service Layer")
 @TestInstance(Lifecycle.PER_CLASS)
@@ -61,11 +60,13 @@ public class AccountServiceTest
 	@DisplayName("Should create an account successfully")
 	@Test
 	void shouldCreateAccuntSuccessfully() throws Exception {
-		List<CardRequest> cardsRequest = generateCardsRequestInstance(
-				new CardRequest("CARD TEST", Constants.MASTERCARD, new CardTypeRquest(Constants.DEBIT_CARD), "123.456.789.012", "12345", 1000.0));
-		AccountRequest accountRequest = generateAccountRequestInstance(
-				"ACCOUNT TEST", "1234", "12345678", "1", "123.456.789.01", cardsRequest);
-		Account account = Account.getAccountInstance(accountRequest);
+		CardTypeRquest cardTypeRquest = Utilities.generateCardTypeRequest(Constants.DEBIT_CARD);
+		CardRequest cardRequest = Utilities.generateCardRequest(
+			"CARD TEST", Constants.MASTERCARD, cardTypeRquest, "123.456.789.012", "12345", 1000.0);
+		List<CardRequest> cardsRequest = Utilities.generateCardsRequest(cardRequest);
+		AccountRequest accountRequest = Utilities.generateAccountRequest(
+			"ACCOUNT TEST", "1234", "12345678", "1", "123.456.789.01", cardsRequest);
+		Account account = Account.generateAccountInstance(accountRequest);
 		
 		Set<Type> types = new HashSet<>();
 		types.add(Type.valueOf(Constants.DEBIT_CARD));
@@ -83,6 +84,7 @@ public class AccountServiceTest
 			.thenReturn(account);
 		
 		Account savedAccount = accountService.createAccount(accountRequest);
+		
 		Assertions.assertNotNull(savedAccount);
 		Assertions.assertAll("account",
 				() -> assertEquals(accountRequest.getNameOwner(), savedAccount.getNameOwner()),
@@ -92,7 +94,6 @@ public class AccountServiceTest
 		);
 		Assertions.assertAll(
 				() -> {
-						CardRequest cardRequest = accountRequest.getCardsRequest().get(0);
 						Card card = savedAccount.getCards().get(0);
 						
 						assertAll("card",
@@ -109,17 +110,20 @@ public class AccountServiceTest
 	@DisplayName("Should return all instances")
 	@Test
 	void shouldReturnAllInstances() {
-		List<CardRequest> firstCardsRequest = generateCardsRequestInstance(
-				new CardRequest("CARD TEST", Constants.MASTERCARD, new CardTypeRquest(Constants.DEBIT_CARD), "123.456.789.012", "12345", 1000.0));
-		AccountRequest firstAccountRequest = generateAccountRequestInstance(
+		CardTypeRquest firstCardTypeRequest = Utilities.generateCardTypeRequest(Constants.DEBIT_CARD);
+		List<CardRequest> firstCardsRequest = Utilities.generateCardsRequest(
+				new CardRequest("CARD TEST", Constants.MASTERCARD, firstCardTypeRequest, "123.456.789.012", "12345", 1000.0));
+		AccountRequest firstAccountRequest = Utilities.generateAccountRequest(
 				"ACCOUNT TEST", "1234", "12345678", "1", "123.456.789.01", firstCardsRequest);
-		List<CardRequest> secondCardsRequest = generateCardsRequestInstance(
-				new CardRequest("CARD TEST", Constants.MASTERCARD, new CardTypeRquest(Constants.DEBIT_CARD), "123.456.789.012", "12345", 1000.0));
-		AccountRequest secondAccountRequest = generateAccountRequestInstance(
+		
+		CardTypeRquest secondCardTypeRequest = Utilities.generateCardTypeRequest(Constants.CREDIT_CARD);
+		List<CardRequest> secondCardsRequest = Utilities.generateCardsRequest(
+				new CardRequest("CARD TEST", Constants.MASTERCARD, secondCardTypeRequest, "123.456.789.012", "12345", 1000.0));
+		AccountRequest secondAccountRequest = Utilities.generateAccountRequest(
 				"ACCOUNT TEST", "1234", "12345678", "1", "123.456.789.01", secondCardsRequest);
 		
-		List<AccountRequest> accountsRequest = Arrays.asList(firstAccountRequest, secondAccountRequest);
-		List<Account> accounts = generateAccountList(accountsRequest);
+		List<AccountRequest> accountsRequest = Utilities.generateAccountsRequest(firstAccountRequest, secondAccountRequest);
+		List<Account> accounts = Account.generateAccountsInstance(accountsRequest);
 		
 		Mockito
 			.when(accountRepository.findAll())
@@ -133,12 +137,13 @@ public class AccountServiceTest
 	
 	@DisplayName("Should return account by Id")
 	@Test
-	public void shouldReturnAccountById() {
-		List<CardRequest> cardsRequest = generateCardsRequestInstance(
-				new CardRequest("CARD TEST", Constants.MASTERCARD, new CardTypeRquest(Constants.DEBIT_CARD), "123.456.789.012", "12345", 1000.0));
-		AccountRequest accountRequest = generateAccountRequestInstance(
+	void shouldReturnAccountById() {
+		CardTypeRquest cardTypeRequest = Utilities.generateCardTypeRequest(Constants.DEBIT_CARD);
+		List<CardRequest> cardsRequest = Utilities.generateCardsRequest(
+				new CardRequest("CARD TEST", Constants.MASTERCARD, cardTypeRequest, "123.456.789.012", "12345", 1000.0));
+		AccountRequest accountRequest = Utilities.generateAccountRequest(
 				"ACCOUNT TEST", "1234", "12345678", "1", "123.456.789.01", cardsRequest);
-		Account account = Account.getAccountInstance(accountRequest);
+		Account account = Account.generateAccountInstance(accountRequest);
 		Integer id = Integer.valueOf(1);
 		account.setId(id);
 		Optional<Account> oAccount = Optional.of(account);
@@ -155,7 +160,7 @@ public class AccountServiceTest
 	
 	@DisplayName("Should throw account not found exception")
 	@Test
-	public void shouldThrowAccountNotFoundException() {		
+	void shouldThrowAccountNotFoundException() {		
 		Optional<Account> oAccount = Optional.empty();
 		int anyInt = ArgumentMatchers.anyInt();
 		
@@ -171,7 +176,7 @@ public class AccountServiceTest
 	
 	@DisplayName("Should delete an account successfully")
 	@Test
-	public void shouDeleteAnAccountSuccessfully() {
+	void shouDeleteAnAccountSuccessfully() {
 		Account account = mock(Account.class);
 		Optional<Account> oAccount = Optional.of(account);
 		int anyInt = ArgumentMatchers.anyInt();
@@ -186,15 +191,15 @@ public class AccountServiceTest
 	
 	@DisplayName("Should update an account successfully")
 	@Test
-	public void shouldUpdateAccountById() {			
+	void shouldUpdateAccountById() {			
 		Account account = Mockito.mock(Account.class);
 		Optional<Account> oAccount = Optional.of(account);
 		
-		List<CardRequest> newCardsRequest = generateCardsRequestInstance(
-				new CardRequest("CARD UPDATE", Constants.VISA, new CardTypeRquest(Constants.CREDIT_CARD), "987.654.321.098", "98765", 2000.0));
-		AccountRequest newAccountRequest = generateAccountRequestInstance(
-				"UPDATE TEST", "9876", "98765432", "9", "987.654.321.09", newCardsRequest);
-		Account newAccount = Account.getAccountInstance(newAccountRequest);
+		List<CardRequest> newCardsRequest = Utilities.generateCardsRequest(
+			new CardRequest("CARD UPDATE", Constants.VISA, new CardTypeRquest(Constants.CREDIT_CARD), "987.654.321.098", "98765", 2000.0));
+		AccountRequest newAccountRequest = Utilities.generateAccountRequest(
+			"UPDATE TEST", "9876", "98765432", "9", "987.654.321.09", newCardsRequest);
+		Account newAccount = Account.generateAccountInstance(newAccountRequest);
 		int anyInt = ArgumentMatchers.anyInt();
 		
 		Set<Type> types = new HashSet<>();
@@ -237,34 +242,5 @@ public class AccountServiceTest
 				}
 		);
 		
-	}
-
-	private List<Account> generateAccountList(
-		final List<AccountRequest> accountsRquest) 
-	{
-		final List<Account> accounts = new ArrayList<>();
-		for (final AccountRequest accountRequest : accountsRquest) {
-			final Account currentAccount = Account.getAccountInstance(accountRequest);
-			accounts.add(currentAccount);
-		}
-		return accounts;
-	}
-
-	private static List<CardRequest> generateCardsRequestInstance(
-		final CardRequest... cardsRequests) 
-	{
-		return Arrays.asList(cardsRequests);		
-	}
-	
-	private static AccountRequest generateAccountRequestInstance(
-		final String nameOwner, 
-		final String agencyCode, 
-		final String accountCode, 
-		final String verificationDigital, 
-		final String registerId, 
-		final List<CardRequest> cardsRequest) 
-	{
-		return new AccountRequest(
-			nameOwner, agencyCode, accountCode, verificationDigital, registerId, cardsRequest);
 	}
 }

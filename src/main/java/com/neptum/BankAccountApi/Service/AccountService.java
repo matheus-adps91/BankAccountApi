@@ -35,7 +35,7 @@ public class AccountService
 		final Set<String> cardsNames = taskCollaborator.getCardsTypesNames(accountRequest);
 		final Set<Type> types = taskCollaborator.getTypes(cardsNames);
 		final Set<CardType> persistedCardsTypes = cardTypeRepository.findAllByTypeIn(types);
-		final Account account = Account.getAccountInstance(accountRequest);
+		final Account account = Account.generateAccountInstance(accountRequest);
 		taskCollaborator.setIdForEachCardType(persistedCardsTypes, account);
 		final Account savedAccount = accountRepository.save(account);
 		return savedAccount;
@@ -70,7 +70,7 @@ public class AccountService
 		final Set<String> cardsNames = taskCollaborator.getCardsTypesNames(accountRequest);
 		final Set<Type> types = taskCollaborator.getTypes(cardsNames);
 		final Set<CardType> persistedCardsTypes = cardTypeRepository.findAllByTypeIn(types);
-		final Account newAccount = Account.getAccountInstance(accountRequest);
+		final Account newAccount = Account.generateAccountInstance(accountRequest);
 		taskCollaborator.setIdForEachCardType(persistedCardsTypes, newAccount);
 		newAccount.setId(account.getId());
 		final Account updatedAccount = accountRepository.save(newAccount);
