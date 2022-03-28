@@ -29,7 +29,7 @@ public class AccountController
 	@Autowired
 	private AccountService accountService;
 	
-	@PostMapping("/create")
+	@PostMapping("/account")
 	public ResponseEntity<Account> createAccount(
 		final @Valid @RequestBody AccountRequest accountRequest) 
 	{
