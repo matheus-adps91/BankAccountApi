@@ -1,4 +1,4 @@
-package com.neptum.BankAccountApi.Controller;
+package com.neptum.BankAccountApi.controller;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neptum.BankAccountApi.DTO.request.AccountRequest;
-import com.neptum.BankAccountApi.Model.Account;
-import com.neptum.BankAccountApi.Service.AccountService;
+import com.neptum.BankAccountApi.model.Account;
+import com.neptum.BankAccountApi.service.AccountService;
 
 @RestController
 @RequestMapping("/api/v1/banking")

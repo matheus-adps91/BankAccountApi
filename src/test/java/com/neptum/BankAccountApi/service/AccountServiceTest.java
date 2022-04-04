@@ -1,7 +1,8 @@
 package com.neptum.BankAccountApi.service;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,17 +26,15 @@ import org.mockito.MockitoAnnotations;
 import com.neptum.BankAccountApi.DTO.request.AccountRequest;
 import com.neptum.BankAccountApi.DTO.request.CardRequest;
 import com.neptum.BankAccountApi.DTO.request.CardTypeRquest;
-import com.neptum.BankAccountApi.Model.Account;
-import com.neptum.BankAccountApi.Model.Card;
-import com.neptum.BankAccountApi.Model.CardType;
-import com.neptum.BankAccountApi.Model.Type;
-import com.neptum.BankAccountApi.Repository.AccountRepository;
-import com.neptum.BankAccountApi.Repository.CardRepository;
-import com.neptum.BankAccountApi.Repository.CardTypeRepository;
-import com.neptum.BankAccountApi.Service.AccountService;
-import com.neptum.BankAccountApi.Service.TaskCollaborator;
 import com.neptum.BankAccountApi.constants.Constants;
 import com.neptum.BankAccountApi.exception.AccountNotFoundException;
+import com.neptum.BankAccountApi.model.Account;
+import com.neptum.BankAccountApi.model.Card;
+import com.neptum.BankAccountApi.model.CardType;
+import com.neptum.BankAccountApi.model.Type;
+import com.neptum.BankAccountApi.repository.AccountRepository;
+import com.neptum.BankAccountApi.repository.CardRepository;
+import com.neptum.BankAccountApi.repository.CardTypeRepository;
 import com.neptum.BankAccountApi.utils.Utilities;
 
 @DisplayName("Test Service Layer")
@@ -96,7 +96,7 @@ public class AccountServiceTest
 				() -> {
 						Card card = savedAccount.getCards().get(0);
 						
-						assertAll("card",
+						Assertions.assertAll("card",
 							() -> assertEquals(cardRequest.getName(), card.getName()),
 							() -> assertEquals(cardRequest.getFlag(), card.getFlag().name()),
 							() -> assertEquals(cardRequest.getNumber(), card.getNumber()),
@@ -154,8 +154,8 @@ public class AccountServiceTest
 		
 		Account retrievedAccount = accountService.getAccountById(id);
 		
-		Assertions.assertNotNull(retrievedAccount);
-		Assertions.assertEquals(id, retrievedAccount.getId());
+		assertNotNull(retrievedAccount);
+		assertEquals(id, retrievedAccount.getId());
 	}
 	
 	@DisplayName("Should throw account not found exception")

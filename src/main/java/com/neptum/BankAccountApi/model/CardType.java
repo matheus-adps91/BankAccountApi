@@ -1,4 +1,4 @@
-package com.neptum.BankAccountApi.Model;
+package com.neptum.BankAccountApi.model;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

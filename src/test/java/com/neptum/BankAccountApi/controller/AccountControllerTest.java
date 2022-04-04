@@ -15,14 +15,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.neptum.BankAccountApi.Controller.AccountController;
 import com.neptum.BankAccountApi.DTO.request.AccountRequest;
 import com.neptum.BankAccountApi.DTO.request.CardRequest;
 import com.neptum.BankAccountApi.DTO.request.CardTypeRquest;
-import com.neptum.BankAccountApi.Model.Account;
-import com.neptum.BankAccountApi.Service.AccountService;
 import com.neptum.BankAccountApi.constants.Constants;
 import com.neptum.BankAccountApi.exception.AccountNotFoundException;
+import com.neptum.BankAccountApi.model.Account;
+import com.neptum.BankAccountApi.service.AccountService;
 import com.neptum.BankAccountApi.utils.Utilities;
 
 @DisplayName("Test Controller Layer")
@@ -125,6 +124,5 @@ public class AccountControllerTest
 		} catch (AccountNotFoundException ex) {
 			Assertions.assertEquals(Constants.ACCOUNT_NOT_FOUND_EXCEPTION, ex.getMessage());
 		}
-		
 	}
 }

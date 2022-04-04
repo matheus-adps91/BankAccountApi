@@ -1,4 +1,4 @@
-package com.neptum.BankAccountApi.Model;
+package com.neptum.BankAccountApi.model;
 
 import java.util.ArrayList;
 import java.util.List;

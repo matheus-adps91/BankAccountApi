@@ -1,4 +1,4 @@
-package com.neptum.BankAccountApi.Service;
+package com.neptum.BankAccountApi.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,15 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.neptum.BankAccountApi.DTO.request.AccountRequest;
-import com.neptum.BankAccountApi.Model.Account;
-import com.neptum.BankAccountApi.Model.Card;
-import com.neptum.BankAccountApi.Model.CardType;
-import com.neptum.BankAccountApi.Model.Type;
-import com.neptum.BankAccountApi.Repository.AccountRepository;
-import com.neptum.BankAccountApi.Repository.CardRepository;
-import com.neptum.BankAccountApi.Repository.CardTypeRepository;
 import com.neptum.BankAccountApi.constants.Constants;
 import com.neptum.BankAccountApi.exception.AccountNotFoundException;
+import com.neptum.BankAccountApi.model.Account;
+import com.neptum.BankAccountApi.model.Card;
+import com.neptum.BankAccountApi.model.CardType;
+import com.neptum.BankAccountApi.model.Type;
+import com.neptum.BankAccountApi.repository.AccountRepository;
+import com.neptum.BankAccountApi.repository.CardRepository;
+import com.neptum.BankAccountApi.repository.CardTypeRepository;
 
 @Service
 public class AccountService

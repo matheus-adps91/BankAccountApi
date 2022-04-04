@@ -1,8 +1,8 @@
-package com.neptum.BankAccountApi.Repository;
+package com.neptum.BankAccountApi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.neptum.BankAccountApi.Model.Account;
+import com.neptum.BankAccountApi.model.Account;
 
 public interface AccountRepository 
 	extends 

@@ -1,14 +1,14 @@
-package com.neptum.BankAccountApi.Service;
+package com.neptum.BankAccountApi.service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.neptum.BankAccountApi.DTO.request.AccountRequest;
-import com.neptum.BankAccountApi.Model.Account;
-import com.neptum.BankAccountApi.Model.Card;
-import com.neptum.BankAccountApi.Model.CardType;
-import com.neptum.BankAccountApi.Model.Type;
 import com.neptum.BankAccountApi.constants.Constants;
+import com.neptum.BankAccountApi.model.Account;
+import com.neptum.BankAccountApi.model.Card;
+import com.neptum.BankAccountApi.model.CardType;
+import com.neptum.BankAccountApi.model.Type;
 
 public class TaskCollaborator
 {
